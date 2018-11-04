@@ -1,0 +1,20 @@
+/**间隔样式**/
+.jf-margin-left-no {margin-left:0px;}
+.jf-margin-right-no {margin-right:0px;}
+.jf-padding-left-no {padding-left:0px;}
+.jf-padding-right-no {padding-right:0px;}
+.jf-margin-space{margin-right:5px;}
+
+/**表单样式**/
+.jf-form-radius {border-radius: 5px;}
+
+/**鼠标样式**/
+.jf-cursor-point {cursor:pointer;}
+
+/**分页样式**/
+.jf-page-info-width {width:40px !important;}
+.jf-page-select-width {width:50px !important;}
+.jf-page-border {border-radius:0px !important;border-left:0px;border-right:0px;}
+
+/**模态框样式**/
+.jf-modal-lr-radius {border-bottom-right-radius:3px;border-bottom-left-radius:3px;}

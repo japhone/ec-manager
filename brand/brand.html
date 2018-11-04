@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>商品管理</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="../../bower_components/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="../../bower_components/Ionicons/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../plugins/angularjs/angular.min.js"></script>
+  <script src="../js/pagination.js"></script>
+  <script src="../js/baseCtrl.js"></script>
+  <script>
+	app.controller('brandController', function($rootScope, $scope, $http){
+    $rootScope.base = {url:{}};
+    $rootScope.base.url.save = "../api/brand/save.do";
+    $rootScope.base.url.get = "../api/brand/get.do?id=";
+    $rootScope.base.url.del = "../api/brand/delete.do?ids=";
+	});
+</script>
+</head>
+<body class="hold-transition skin-blue sidebar-mini" ng-app="baway" ng-controller="baseCtrl">
+<div class="wrapper" ng-controller="brandController">
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper jf-margin-left-no">
+
+    <!-- Main content -->
+    <section class="content jf-padding-left-no jf-padding-right-no">
+
+      <div class="box box-info">
+        <div class="box-header with-border">
+          <h3 class="box-title">查询</h3>
+        </div>
+        <!-- /.box-header -->
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">品牌名称</label>
+
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control jf-form-radius" ng-model="searchVo.name" placeholder="品牌名称">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6 col-xs-12"> 
+                <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">首字母</label>
+
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control jf-form-radius" ng-model="searchVo.firstChar" placeholder="首字母">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box-footer">
+            <button type="button" class="btn btn-info pull-right" ng-click="reloadList()">查询</button>
+            <button type="button" class="btn btn-default pull-right jf-margin-space" ng-click="reset()">重置</button>
+          </div>
+          <!-- /.box-footer -->
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editModule" ng-click="clear()">新增</button>
+        <button type="button" class="btn btn-default" ng-click='dels()'>删除</button>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box box-warning">
+            <div class="box-body table-responsive no-padding">
+              <table class="table table-hover">
+                <tr>
+                  <th><input type="checkbox" class="icheckbox_square-blue" ng-click="selectAll($event)"/></th>
+                  <th>品牌ID</th>
+                  <th>品牌名称</th>
+                  <th>品牌首字母</th>
+                  <th>操作</th>
+                </tr>
+                <tr ng-repeat="brand in list">
+                  <td><input type="checkbox" name="id" ng-value="brand.id" class="icheckbox_square-blue" ng-click="selections($event, brand.id)"/></td>
+                  <td>{{ brand.id }}</td>
+                  <td>{{ brand.name }}</td>
+                  <td>{{ brand.firstChar }}</td>
+                  <td>
+                    <i class="fa fa-file-text-o jf-cursor-point jf-margin-space" title="详情" data-toggle="modal" data-target="#detailModule" ng-click="get(brand.id)"></i>
+                    <i class="glyphicon glyphicon-edit jf-cursor-point jf-margin-space" title="编辑" data-toggle="modal" data-target="#editModule" ng-click="get(brand.id)"></i>
+                    <i class="glyphicon glyphicon-trash jf-cursor-point" title="删除" ng-click="selectIds.push(brand.id); dels()"></i>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <jf-pagination conf="paginationConf"></jf-pagination>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+
+    </section>
+    <!-- /.content -->
+  </div>
+
+</div>
+<!-- ./wrapper -->
+
+<div class="modal fade" id="editModule">
+  <div class="modal-dialog">
+    <div class="box box-primary">
+      <div class="modal-content jf-modal-lr-radius">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">新增/编辑品牌</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered table-striped"  width="800px">
+            <tr>
+              <td>品牌名称</td>
+              <td><input  class="form-control jf-form-radius" placeholder="品牌名称" ng-model="entity.name">  </td>
+            </tr>           
+            <tr>
+              <td>首字母</td>
+              <td><input  class="form-control jf-form-radius" placeholder="首字母" ng-model="entity.firstChar">  </td>
+            </tr>    
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+
+          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="save()">保存</button>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<!-- 详情 -->
+<div class="modal fade" id="detailModule">
+  <div class="modal-dialog">
+    <div class="box box-primary">
+      <div class="modal-content jf-modal-lr-radius">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">商品详情</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered table-striped"  width="800px">
+            <tr>
+              <td>品牌名称</td>
+              <td>{{entity.name}}</td>
+            </tr>           
+            <tr>
+              <td>首字母</td>
+              <td>{{entity.firstChar}}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<!-- jQuery 3 -->
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

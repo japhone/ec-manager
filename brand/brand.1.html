@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>商品管理</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+  <!-- Bootstrap 3.3.7 -->
+  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="../../bower_components/font-awesome/css/font-awesome.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="../../bower_components/Ionicons/css/ionicons.min.css">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
+  <link rel="stylesheet" href="../../css/style.css">
+  <script src="../plugins/angularjs/angular.min.js"></script>
+  <script src="../js/pagination.js"></script>
+  <script>
+	var app = angular.module('baway', ['pagination']);
+	app.controller('brandController', function($scope, $http){
+    $scope.paginationConf = {
+           onChange: function(){
+             $scope.reloadList();
+           }
+      };
+      $scope.findAll = function(pageNum, pageSize){
+        $http.post('../api/brand/list.do?pageNum='+pageNum+'&pageSize='+pageSize).success(function(response){
+          $scope.list = response.data;
+          $scope.paginationConf.totalItems = response.total;
+        });
+      };
+      $scope.reloadList = function(){
+        $scope.search($scope.paginationConf.currentPage, $scope.paginationConf.itemsPerPage);
+      }
+
+      $scope.save = function(){
+        $http.post('../api/brand/save.do', $scope.brand).success(function(response){
+          if(response.success) {
+            $scope.reloadList();
+          } else {
+            alert(response.message);
+          }
+        });
+      }
+
+      $scope.get = function(id) {
+        $http.get('../api/brand/get.do?id='+id).success(function(response){
+          $scope.brand = response;
+        });
+      }
+
+      $scope.selectIds = [];
+
+      $scope.selections = function($event, id){
+        if($event.target.checked){
+          $scope.selectIds.push(id);
+        }else{
+          var index = $scope.selectIds.indexOf(id);
+          $scope.selectIds.splice(index, 1);
+        }
+      }
+
+      $scope.dels = function(){
+        $http.get('../api/brand/delete.do?ids=' + $scope.selectIds).success(function(response){
+          if(response.success){
+            $scope.reloadList();
+          }else{
+            alert(response.message);
+          }
+        });
+      }
+
+      $scope.searchBrand = {};
+      $scope.search = function(pageNum, pageSize) {
+        $http.post('../api/brand/list.do?pageNum='+pageNum+'&pageSize='+pageSize, $scope.searchBrand).success(function(response){
+          $scope.list = response.data;
+          $scope.paginationConf.totalItems = response.total;
+        });
+      }
+	});
+</script>
+</head>
+<body class="hold-transition skin-blue sidebar-mini" ng-app="baway" ng-controller="brandController">
+<div class="wrapper">
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper jf-margin-left-no">
+
+    <!-- Main content -->
+    <section class="content jf-padding-left-no jf-padding-right-no">
+
+      <div class="box box-info">
+        <div class="box-header with-border">
+          <h3 class="box-title">查询</h3>
+        </div>
+        <!-- /.box-header -->
+        <!-- form start -->
+        <form class="form-horizontal">
+          <div class="box-body">
+            <div class="row">
+              <div class="col-md-4 col-sm-6 col-xs-12">
+                <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">品牌名称</label>
+
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control jf-form-radius" ng-model="searchBrand.name" placeholder="品牌名称">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-6 col-xs-12"> 
+                <div class="form-group">
+                  <label for="inputEmail3" class="col-sm-4 control-label">首字母</label>
+
+                  <div class="col-sm-8">
+                    <input type="text" class="form-control jf-form-radius" ng-model="searchBrand.firstChar" placeholder="首字母">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="box-footer">
+            <button type="button" class="btn btn-info pull-right" ng-click="reloadList()">查询</button>
+            <button type="button" class="btn btn-info pull-right jf-margin-space" ng-click="searchBrand={}">重置</button>
+          </div>
+          <!-- /.box-footer -->
+        </form>
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editModule" ng-click="brand={}">新增</button>
+        <button type="button" class="btn btn-default" ng-click='dels()'>删除</button>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box box-warning">
+            <div class="box-body table-responsive no-padding">
+              <table class="table table-hover">
+                <tr>
+                  <th><input type="checkbox" id="selectAll" class="icheckbox_square-blue"/></th>
+                  <th>品牌ID</th>
+                  <th>品牌名称</th>
+                  <th>品牌首字母</th>
+                  <th>操作</th>
+                </tr>
+                <tr ng-repeat="brand in list">
+                  <td><input type="checkbox" name="id" class="icheckbox_square-blue" ng-click="selections($event, brand.id)"/></td>
+                  <td>{{ brand.id }}</td>
+                  <td>{{ brand.name }}</td>
+                  <td>{{ brand.firstChar }}</td>
+                  <td>
+                    <i class="fa fa-file-text-o jf-cursor-point jf-margin-space" title="详情" data-toggle="modal" data-target="#detailModule" ng-click="get(brand.id)"></i>
+                    <i class="glyphicon glyphicon-edit jf-cursor-point jf-margin-space" title="编辑" data-toggle="modal" data-target="#editModule" ng-click="get(brand.id)"></i>
+                    <i class="glyphicon glyphicon-trash jf-cursor-point" title="删除" ng-click="selectIds.push(brand.id); dels()"></i>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <jf-pagination conf="paginationConf"></jf-pagination>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+
+    </section>
+    <!-- /.content -->
+  </div>
+
+</div>
+<!-- ./wrapper -->
+
+<div class="modal fade" id="editModule">
+  <div class="modal-dialog">
+    <div class="box box-primary">
+      <div class="modal-content jf-modal-lr-radius">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">新增/编辑品牌</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered table-striped"  width="800px">
+            <tr>
+              <td>品牌名称</td>
+              <td><input  class="form-control jf-form-radius" placeholder="品牌名称" ng-model="brand.name">  </td>
+            </tr>           
+            <tr>
+              <td>首字母</td>
+              <td><input  class="form-control jf-form-radius" placeholder="首字母" ng-model="brand.firstChar">  </td>
+            </tr>    
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+
+          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click="save()">保存</button>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<!-- 详情 -->
+<div class="modal fade" id="detailModule">
+  <div class="modal-dialog">
+    <div class="box box-primary">
+      <div class="modal-content jf-modal-lr-radius">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">商品详情</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered table-striped"  width="800px">
+            <tr>
+              <td>品牌名称</td>
+              <td>{{brand.name}}</td>
+            </tr>           
+            <tr>
+              <td>首字母</td>
+              <td>{{brand.firstChar}}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<!-- jQuery 3 -->
+<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+<!-- Bootstrap 3.3.7 -->
+<script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+</body>
+</html>
