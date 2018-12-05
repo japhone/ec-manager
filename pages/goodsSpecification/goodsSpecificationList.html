@@ -175,8 +175,28 @@
                   </tr>
                   <tr>
                     <td>是否启用</td>
-                    <td><input name="enabled" class="form-control jf-form-radius" placeholder="是否启用"/></td>
+                    <td>
+                      <input name="enabled" type="radio" value="1" checked/>&nbsp;是
+                      <input name="enabled" type="radio" value="0" style="margin-left:10px;"/>&nbsp;否
+                    </td>
                   </tr>
+          </table>
+          <table class="table table-bordered table-striped"  width="800px">
+            <tr>
+              <td colspan="4">规格属性&nbsp;&nbsp;<button type="button" class="btn btn-default">新增属性</button></td>
+            </tr>
+            <tr>
+              <th>名称</th>
+              <th>编号</th>
+              <th>排序号</th>
+              <th>操作</th>
+            </tr>
+            <tr>
+              <td><input name="specificationName" class="form-control jf-form-radius" placeholder="属性名称"/></td>
+              <td><input name="specificationCode" class="form-control jf-form-radius" placeholder="属性编号"/></td>
+              <td><input name="specificationSortNumber" class="form-control jf-form-radius" placeholder="属性排序号"/></td>
+              <td><button type="button" class="btn btn-default">删除</button></td>
+            </tr>
           </table>
         </div>
         <div class="modal-footer">
