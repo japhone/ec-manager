@@ -1,0 +1,219 @@
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper jf-margin-left-no">
+
+    <!-- Main content -->
+    <section class="content jf-padding-left-no jf-padding-right-no">
+
+      <div class="box box-info">
+        <div class="box-header with-border">
+          <h3 class="box-title">查询</h3>
+        </div>
+        <!-- /.box-header -->
+          <div class="box-body">
+                      <div class="row">
+                  <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="form-group">
+                      <label for="inputEmail3" class="col-sm-4 control-label">名称</label>
+
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control jf-form-radius" placeholder="名称" name="name" v-model="searchTopicCategory.name">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 col-sm-6 col-xs-12">
+                    <div class="form-group">
+                      <label for="inputEmail3" class="col-sm-4 control-label">编码</label>
+
+                      <div class="col-sm-8">
+                        <input type="text" class="form-control jf-form-radius" placeholder="编码" name="code" v-model="searchTopicCategory.code">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-md-4 col-sm-6 col-xs-12"> 
+                  </div>
+                </div>
+          </div>
+          <div class="box-footer">
+            <button type="button" class="btn btn-info pull-right" @click="list">查询</button>
+            <button type="button" class="btn btn-default pull-right jf-margin-space" @click="reset">重置</button>
+          </div>
+          <!-- /.box-footer -->
+      </div>
+
+      <div class="btn-group">
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editModule" @click="init">新增</button>
+        <button type="button" class="btn btn-default" @click="dels()">删除</button>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box box-warning">
+            <div class="box-body table-responsive no-padding">
+              <table class="table table-hover">
+                <tbody>
+                  <tr>
+                    <th><input type="checkbox" class="icheckbox_square-blue" @click="selectAll"/></th>
+                        <th>名称</th>
+                        <th>编码</th>
+                        <th>排序号</th>
+                        <th>最后更新时间</th>
+                        <th>最后更新用户</th>
+                        <th>是否启用</th>
+                    <th>操作</th>
+                  </tr>
+                  <tr v-for="topicCategory in topicCategoryList">
+                    <td><input type="checkbox" name="id" class="icheckbox_square-blue" :value="topicCategory.id" v-model="ids"/></td>
+                        <td>{{topicCategory.name}}</td>
+                        <td>{{topicCategory.code}}</td>
+                        <td>{{topicCategory.sortNumber}}</td>
+                        <td>{{topicCategory.updatedTime | formatting}}</td>
+                        <td>{{topicCategory.updatedUserNickName}}</td>
+                        <td>{{topicCategory.isEnabled == 1 ? "启用" : "禁用"}}</td>
+                    <td>
+                      <i class="fa fa-file-text-o jf-cursor-point jf-margin-space" title="详情" data-toggle="modal" data-target="#detailModule" @click="detail(topicCategory.id)"></i>
+                      <i class="glyphicon glyphicon-edit jf-cursor-point jf-margin-space" title="编辑" data-toggle="modal" data-target="#editModule" @click="detail(topicCategory.id)"></i>
+                      <i class="glyphicon glyphicon-trash jf-cursor-point" title="删除" @click="del(topicCategory.id)"></i>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <ul class="pagination pagination-sm no-margin pull-right">
+                <li><a href="javascript:" title="首页" @click="switchPage(1)">&laquo;</a></li>
+                <li><a href="javascript:" title="上一页" @click="prePage()">&lsaquo;</a></li>
+                <li v-if="page.currentPage-page.step > 0"><a href="javascript:">...</a></li>
+                <li v-for="p in page.numbers" v-if="p<page.currentPage && p > page.currentPage-page.step" @click="switchPage(p)"><a href="javascript:">{{p}}</a></li>
+                <li class="active"><a href="javascript:">{{page.currentPage}}</a></li>
+                <li v-for="p in page.numbers" v-if="p>page.currentPage && p < page.currentPage+page.step" @click="switchPage(p)"><a href="javascript:">{{p}}</a></li>
+                <li v-if="page.currentPage+page.step < page.totalPage+1"><a href="javascript:">...</a></li>
+                <li><a href="javascript:" title="下一页" @click="nextPage()">&rsaquo;</a></li>
+                <li><a href="javascript:" title="尾页" @click="switchPage(page.totalPage)">&raquo;</a></li>
+              </ul>
+              <div class="input-group input-group-sm pull-right col-xs-1 jf-margin-space">
+                <span class="input-group-btn"><button type="button" class="btn btn-default">每页</button></span>
+                <select class="form-control jf-page-select-width jf-page-border" v-model="page.pageSize" @change="list">
+                  <option v-for="item in page.sizes" :value="item">{{item}}</option>
+                </select>
+                <span class="input-group-btn"><button type="button" class="btn btn-default jf-page-border">条/共{{page.total}}条 第</button></span>
+                <input type="number" class="form-control jf-page-info-width" v-model="page.currentPage" @blur="list" min="0">
+                <span class="input-group-btn"><button type="button" class="btn btn-default">页</button></span>
+              </div>
+            </div>
+          </div>
+          <!-- /.box -->
+        </div>
+      </div>
+
+    </section>
+    <!-- /.content -->
+  </div>
+
+</div>
+<!-- ./wrapper -->
+
+<!-- 编辑模态框 -->
+<div class="modal fade" id="editModule">
+  <div class="modal-dialog">
+    <div class="box box-primary">
+      <div class="modal-content jf-modal-lr-radius">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">新增/编辑资讯分类</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered table-striped"  width="800px">
+            <tbody>
+                  <tr>
+                    <td>名称</td>
+                    <td><input name="name" v-model="topicCategory.name" class="form-control jf-form-radius" placeholder="名称"/></td>
+                  </tr>
+                  <tr>
+                    <td>编码</td>
+                    <td><input name="code" v-model="topicCategory.code" class="form-control jf-form-radius" placeholder="编码"/></td>
+                  </tr>
+                  <tr>
+                    <td>排序号</td>
+                    <td><input type="number" name="sortNumber" v-model="topicCategory.sortNumber" class="form-control jf-form-radius" placeholder="排序号" min="0" max="99"/></td>
+                  </tr>
+                  <tr>
+                    <td>是否启用</td>
+                    <td>
+                      <input type="radio" v-model="topicCategory.isEnabled" value="1"/>是
+                      <input type="radio" v-model="topicCategory.isEnabled" value="0"/>否
+                    </td>
+                  </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+
+          <button type="button" class="btn btn-primary" @click="save">保存</button>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+
+<!-- 详情模态框 -->
+<div class="modal fade" id="detailModule">
+  <div class="modal-dialog">
+    <div class="box box-primary">
+      <div class="modal-content jf-modal-lr-radius">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">资讯分类详情</h4>
+        </div>
+        <div class="modal-body">
+          <table class="table table-bordered table-striped"  width="800px">
+            <tbody>
+                  <tr>
+                    <td>名称</td>
+                    <td>{{topicCategory.name}}</td>
+                  </tr>
+                  <tr>
+                    <td>编码</td>
+                    <td>{{topicCategory.code}}</td>
+                  </tr>
+                  <tr>
+                    <td>创建时间</td>
+                    <td>{{topicCategory.createdTime | formatting}}</td>
+                  </tr>
+                  <tr>
+                    <td>创建用户</td>
+                    <td>{{topicCategory.createdUserNickName}}</td>
+                  </tr>
+                  <tr>
+                    <td>最后更新时间</td>
+                    <td>{{topicCategory.updatedTime | formatting}}</td>
+                  </tr>
+                  <tr>
+                    <td>最后更新用户</td>
+                    <td>{{topicCategory.updatedUserNickName}}</td>
+                  </tr>
+                  <tr>
+                    <td>是否启用</td>
+                    <td>{{topicCategory.isEnabled == 1 ? "启用":"禁用"}}</td>
+                  </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        </div>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+</body>

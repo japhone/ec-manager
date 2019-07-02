@@ -1,21 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>用户</title>
-  <!-- Tell the browser to be responsive to screen width -->
-  <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-  <!-- Bootstrap 3.3.7 -->
-  <link rel="stylesheet" href="../../bower_components/bootstrap/dist/css/bootstrap.min.css">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="../../bower_components/font-awesome/css/font-awesome.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="../../bower_components/Ionicons/css/ionicons.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="../../dist/css/AdminLTE.min.css">
-  <link rel="stylesheet" href="../../css/style.css">
-</head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
 
@@ -31,13 +13,13 @@
         </div>
         <!-- /.box-header -->
           <div class="box-body">
-                      <div class="row">
+                                  <div class="row">
                   <div class="col-md-4 col-sm-6 col-xs-12">
                     <div class="form-group">
-                      <label for="inputEmail3" class="col-sm-4 control-label">帐号</label>
+                      <label for="inputEmail3" class="col-sm-4 control-label">账号</label>
 
                       <div class="col-sm-8">
-                        <input type="text" class="form-control jf-form-radius" placeholder="帐号" name="userId">
+                        <input type="text" class="form-control jf-form-radius" placeholder="账号" name="accountId" v-model="searchUser.accountId">
                       </div>
                     </div>
                   </div>
@@ -46,46 +28,31 @@
                       <label for="inputEmail3" class="col-sm-4 control-label">昵称</label>
 
                       <div class="col-sm-8">
-                        <input type="text" class="form-control jf-form-radius" placeholder="昵称" name="nickName">
+                        <input type="text" class="form-control jf-form-radius" placeholder="昵称" name="nickName" v-model="searchUser.nickName">
                       </div>
                     </div>
                   </div>
                   <div class="col-md-4 col-sm-6 col-xs-12">
                     <div class="form-group">
-                      <label for="inputEmail3" class="col-sm-4 control-label">是否可用</label>
+                      <label for="inputEmail3" class="col-sm-4 control-label">手机号</label>
 
                       <div class="col-sm-8">
-                        <input type="text" class="form-control jf-form-radius" placeholder="是否可用" name="useFlag">
+                        <input type="text" class="form-control jf-form-radius" placeholder="手机号" name="mobile" v-model="searchUser.mobile">
                       </div>
                     </div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-4 col-sm-6 col-xs-12">
-                    <div class="form-group">
-                      <label for="inputEmail3" class="col-sm-4 control-label">注册日期</label>
-
-                      <div class="col-sm-8">
-                        <input type="text" class="form-control jf-form-radius" placeholder="注册日期" name="createDate">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="col-md-4 col-sm-6 col-xs-12"> 
-                  </div>
-                  <div class="col-md-4 col-sm-6 col-xs-12"> 
                   </div>
                 </div>
           </div>
           <div class="box-footer">
-            <button type="button" class="btn btn-info pull-right">查询</button>
-            <button type="button" class="btn btn-default pull-right jf-margin-space">重置</button>
+            <button type="button" class="btn btn-info pull-right" @click="list">查询</button>
+            <button type="button" class="btn btn-default pull-right jf-margin-space" @click="reset">重置</button>
           </div>
           <!-- /.box-footer -->
       </div>
 
       <div class="btn-group">
-        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editModule">新增</button>
-        <button type="button" class="btn btn-default">删除</button>
+        <button type="button" class="btn btn-default" data-toggle="modal" data-target="#editModule" @click="init">新增</button>
+        <button type="button" class="btn btn-default" @click="dels()">删除</button>
       </div>
 
       <div class="row">
@@ -93,56 +60,54 @@
           <div class="box box-warning">
             <div class="box-body table-responsive no-padding">
               <table class="table table-hover">
+                <tbody>
                   <tr>
-                    <th><input type="checkbox" id="selectAll" class="icheckbox_square-blue"/></th>
-                        <th>帐号</th>
-                        <th>电子邮箱</th>
+                    <th><input type="checkbox" id="selectAll" class="icheckbox_square-blue" @click="selectAll"/></th>
+                        <th>荔只号</th>
+                        <th>账号</th>
                         <th>昵称</th>
-                        <th>是否可用</th>
-                        <th>注册日期</th>
-                        <th>最后登录日期</th>
+                        <th>手机号</th>
+                        <th>性别</th>
+                        <th>是否启用</th>
                     <th>操作</th>
                   </tr>
-                  <tr>
-                    <td><input type="checkbox" name="id" class="icheckbox_square-blue" value=""/></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                  <tr v-for="user in userList">
+                    <td><input type="checkbox" name="id" class="icheckbox_square-blue" :value="user.id" v-model="ids"/></td>
+                        <td>{{user.llzNo}}</td>
+                        <td>{{user.accountId}}</td>
+                        <td>{{user.nickName}}</td>
+                        <td>{{user.mobile}}</td>
+                        <td>{{user.sex == 1 ? "男":user.sex == 2 ? "女" : "保密"}}</td>
+                        <td>{{user.isEnabled == 0 ? "禁用" : "启用"}}</td>
                     <td>
-                      <i class="fa fa-file-text-o jf-cursor-point jf-margin-space" title="详情" data-toggle="modal" data-target="#detailModule"></i>
-                      <i class="glyphicon glyphicon-edit jf-cursor-point jf-margin-space" title="编辑" data-toggle="modal" data-target="#editModule"></i>
-                      <i class="glyphicon glyphicon-trash jf-cursor-point" title="删除"></i>
+                      <i class="fa fa-file-text-o jf-cursor-point jf-margin-space" title="详情" data-toggle="modal" data-target="#detailModule" @click="detail(user.id)"></i>
+                      <i class="glyphicon glyphicon-edit jf-cursor-point jf-margin-space" title="编辑" data-toggle="modal" data-target="#editModule" @click="detail(user.id)"></i>
+                      <i class="glyphicon glyphicon-trash jf-cursor-point" title="删除" @click="del(user.id)"></i>
                     </td>
                   </tr>
+                </tbody>
               </table>
             </div>
             <!-- /.box-body -->
             <div class="box-footer clearfix">
               <ul class="pagination pagination-sm no-margin pull-right">
-                <li><a href="#" title="首页">&laquo;</a></li>
-                <li><a href="#" title="上一页">&lsaquo;</a></li>
-                <li><a href="#">1</a></li>
-                <li class="active"><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">...</a></li>
-                <li><a href="#">10</a></li>
-                <li><a href="#" title="下一页">&rsaquo;</a></li>
-                <li><a href="#" title="尾页">&raquo;</a></li>
+                <li><a href="javascript:" title="首页" @click="switchPage(1)">&laquo;</a></li>
+                <li><a href="javascript:" title="上一页" @click="prePage()">&lsaquo;</a></li>
+                <li v-if="page.currentPage-page.step > 0"><a href="javascript:">...</a></li>
+                <li v-for="p in page.numbers" v-if="p<page.currentPage && p > page.currentPage-page.step" @click="switchPage(p)"><a href="javascript:">{{p}}</a></li>
+                <li class="active"><a href="javascript:">{{page.currentPage}}</a></li>
+                <li v-for="p in page.numbers" v-if="p>page.currentPage && p < page.currentPage+page.step" @click="switchPage(p)"><a href="javascript:">{{p}}</a></li>
+                <li v-if="page.currentPage+page.step < page.totalPage+1"><a href="javascript:">...</a></li>
+                <li><a href="javascript:" title="下一页" @click="nextPage()">&rsaquo;</a></li>
+                <li><a href="javascript:" title="尾页" @click="switchPage(page.totalPage)">&raquo;</a></li>
               </ul>
               <div class="input-group input-group-sm pull-right col-xs-1 jf-margin-space">
                 <span class="input-group-btn"><button type="button" class="btn btn-default">每页</button></span>
-                <select class="form-control jf-page-select-width jf-page-border">
-                  <option>10</option>
-                  <option>15</option>
-                  <option>20</option>
-                  <option>30</option>
-                  <option>50</option>
+                <select class="form-control jf-page-select-width jf-page-border" v-model="page.pageSize" @change="list">
+                  <option v-for="item in page.sizes" :value="item">{{item}}</option>
                 </select>
-                <span class="input-group-btn"><button type="button" class="btn btn-default jf-page-border">条/共102条 第</button></span>
-                <input type="text" class="form-control jf-page-info-width" value="1">
+                <span class="input-group-btn"><button type="button" class="btn btn-default jf-page-border">条/共{{page.total}}条 第</button></span>
+                <input type="number" class="form-control jf-page-info-width" v-model="page.currentPage" @blur="list" min="0">
                 <span class="input-group-btn"><button type="button" class="btn btn-default">页</button></span>
               </div>
             </div>
@@ -170,28 +135,33 @@
         </div>
         <div class="modal-body">
           <table class="table table-bordered table-striped"  width="800px">
+            <tbody>
                   <tr>
-                    <td>帐号</td>
-                    <td><input name="userId" class="form-control jf-form-radius" placeholder="帐号"/></td>
+                    <td>账号</td>
+                    <td><input name="accountId" v-model="user.accountId" class="form-control jf-form-radius" placeholder="账号" v-bind:disabled="user.id && user.accountId"/></td>
                   </tr>
                   <tr>
-                    <td>电子邮箱</td>
-                    <td><input name="email" class="form-control jf-form-radius" placeholder="电子邮箱"/></td>
+                    <td>密码</td>
+                    <td><input name="password" v-model="user.password" class="form-control jf-form-radius" placeholder="密码"/></td>
                   </tr>
                   <tr>
                     <td>昵称</td>
-                    <td><input name="nickName" class="form-control jf-form-radius" placeholder="昵称"/></td>
+                    <td><input name="nickName" v-model="user.nickName" class="form-control jf-form-radius" placeholder="昵称"/></td>
                   </tr>
                   <tr>
-                    <td>是否可用</td>
-                    <td><input name="useFlag" class="form-control jf-form-radius" placeholder="是否可用"/></td>
+                    <td>是否启用</td>
+                    <td>
+                      <input type="radio" v-model="user.isEnabled" value="1"/>是
+                      <input type="radio" v-model="user.isEnabled" value="0"/>否
+                    </td>
                   </tr>
+            </tbody>
           </table>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
 
-          <button type="button" class="btn btn-primary">保存</button>
+          <button type="button" class="btn btn-primary" @click="save">保存</button>
         </div>
       </div>
     </div>
@@ -212,30 +182,60 @@
         </div>
         <div class="modal-body">
           <table class="table table-bordered table-striped"  width="800px">
+            <tbody>
                   <tr>
-                    <td>帐号</td>
-                    <td>帐号</td>
+                    <td>荔只号</td>
+                    <td>{{user.llzNo}}</td>
                   </tr>
                   <tr>
-                    <td>电子邮箱</td>
-                    <td>电子邮箱</td>
+                    <td>账号</td>
+                    <td>{{user.accountId}}</td>
                   </tr>
                   <tr>
                     <td>昵称</td>
-                    <td>昵称</td>
+                    <td>{{user.nickName}}</td>
                   </tr>
                   <tr>
-                    <td>是否可用</td>
-                    <td>是否可用</td>
+                    <td>手机号</td>
+                    <td>{{user.mobile}}</td>
                   </tr>
                   <tr>
-                    <td>注册日期</td>
-                    <td>注册日期</td>
+                    <td>性别</td>
+                    <td>{{user.sex == 1 ? "男":user.sex == 2 ? "女" : "保密"}}</td>
                   </tr>
                   <tr>
-                    <td>最后登录日期</td>
-                    <td>最后登录日期</td>
+                    <td>座右铭</td>
+                    <td>{{user.motto}}</td>
                   </tr>
+                  <tr>
+                    <td>图标</td>
+                    <td>{{user.icon}}</td>
+                  </tr>
+                  <tr>
+                    <td>注册位置</td>
+                    <td>{{user.position ? "( " + user.position.lat + " , " + user.position.lon + " )":""}}</td>
+                  </tr>
+                  <tr>
+                    <td>创建时间</td>
+                    <td>{{user.createdTime | formatting}}</td>
+                  </tr>
+                  <tr>
+                    <td>创建用户</td>
+                    <td>{{user.createdUserNickName}}</td>
+                  </tr>
+                  <tr>
+                    <td>最后更新时间</td>
+                    <td>{{user.updatedTime | formatting}}</td>
+                  </tr>
+                  <tr>
+                    <td>最后更新用户</td>
+                    <td>{{user.updatedUserNickName}}</td>
+                  </tr>
+                  <tr>
+                    <td>是否启用</td>
+                    <td>{{user.isEnabled == 0 ? "禁用":"启用"}}</td>
+                  </tr>
+            </tbody>   
           </table>
         </div>
         <div class="modal-footer">
@@ -247,10 +247,4 @@
   </div>
   <!-- /.modal-dialog -->
 </div>
-
-<!-- jQuery 3 -->
-<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
-<!-- Bootstrap 3.3.7 -->
-<script src="../../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
 </body>
-</html>

@@ -1,0 +1,89 @@
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper jf-margin-left-no">
+
+    <!-- Main content -->
+    <section class="content jf-padding-left-no jf-padding-right-no">
+
+      <div class="box box-info">
+        <div class="box-header with-border">
+          <h3 class="box-title">修改个人信息</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body table-responsive no-padding">
+          <table class="table table-bordered table-striped">
+            <tbody>
+              <tr>
+                <td>荔只号</td>
+                <td>{{user.llzNo}}</td>
+              </tr>
+              <tr>
+                <td>帐号</td>
+                <td>{{user.accountId}}</td>
+              </tr>
+              <tr>
+                <td>原密码</td>
+                <td>
+                  <input type="password" class="form-control jf-form-radius" placeholder="原密码" name="password" v-model="user.password"/>
+                </td>
+              </tr>
+              <tr>
+                <td>新密码</td>
+                <td>
+                  <input type="password" class="form-control jf-form-radius" placeholder="新密码" name="newPassword" v-model="user.newPassword">
+                </td>
+              </tr>
+              <tr>
+                <td>重复新密码</td>
+                <td>
+                  <input type="password" class="form-control jf-form-radius" placeholder="重复新密码" name="repPassword">
+                </td>
+              </tr>
+              <tr>
+                <td>昵称</td>
+                <td>
+                  <input type="text" class="form-control jf-form-radius" placeholder="昵称" name="nickName" v-model="user.nickName" disabled="{{user.nickName? true:false}}">
+                </td>
+              </tr>
+              <tr>
+                <td>手机号</td>
+                <td>
+                  <input type="text" class="form-control jf-form-radius" placeholder="手机号" name="mobile" v-model="user.mobile" disabled="">
+                </td>
+              </tr>
+              <tr>
+                <td>性别</td>
+                <td>
+                  <input type="radio" v-model="user.sex" name="sex" value="1"/>男&nbsp;&nbsp;
+                  <input type="radio" v-model="user.sex" name="sex" value="2"/>女&nbsp;&nbsp;
+                  <input type="radio" v-model="user.sex" name="sex" value="0"/>保密
+                </td>
+              </tr>
+              <tr>
+                <td>座右铭</td>
+                <td>
+                  <input type="text" class="form-control jf-form-radius" placeholder="座右铭" name="motto" v-model="user.motto">
+                </td>
+              </tr>
+              <tr>
+                <td>头像</td>
+                <td><input type="text" class="form-control jf-form-radius" placeholder="头像" name="icon" v-model="user.icon"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="modal-footer" style="text-align:center">
+          <button type="button" class="btn btn-primary" @click="save">保存</button>
+        </div>
+          <!-- /.box-footer -->
+      </div>
+
+    </section>
+    <!-- /.content -->
+  </div>
+
+</div>
+<!-- ./wrapper -->
+</body>
